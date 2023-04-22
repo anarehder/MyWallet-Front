@@ -1,18 +1,23 @@
 import styled from "styled-components"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import MyWalletLogo from "../components/MyWalletLogo"
 
+
+
 export default function SignInPage() {
+
+  const navigate = useNavigate();
+
   return (
     <SingInContainer>
       <form>
         <MyWalletLogo />
         <input placeholder="E-mail" type="email" />
-        <input placeholder="Senha" type="password" autocomplete="new-password" />
+        <input placeholder="Senha" type="password" />
         <button>Entrar</button>
       </form>
 
-      <Link>
+      <Link to={"/cadastro"}>
         Primeira vez? Cadastre-se!
       </Link>
     </SingInContainer>
