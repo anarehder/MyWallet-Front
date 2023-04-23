@@ -2,36 +2,31 @@ import styled from "styled-components"
 import { BiExit } from "react-icons/bi"
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai"
 import { useEffect, useContext, useState } from "react"
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { User } from "../contexts/UserContext";
 
 export default function HomePage() {
-  const [userDados,] = useContext(User);
+  const [userDados, setUserDados] = useContext(User);
   const [listaGastos, setListaGastos] = useState([]);
+  const navigate = useNavigate();
+
   let soma = 0;
   if (listaGastos.length > 0){
     listaGastos.forEach((item) => (item.type === "entrada" ? soma += parseFloat(item.value) : soma-= parseFloat(item.value)))
   }
   // {_id, value, description, type, date,userID}
-  console.log(userDados)
+
+  const config = {
+    headers: {
+      "Authorization": `Bearer ${userDados.token}`
+    }
+  }
 
   useEffect(() => {
-    const config = {
-      headers: {
-        "Authorization": `Bearer ${userDados.token}`
-      }
-    }
+
     const promise = axios.get(`${process.env.REACT_APP_API_URL}/operations`, config);
-    /* {
-      "_id": "644482ab57236e1e7f2c734a",
-      "value": "150.00",
-      "description": "Tia Cris",
-      "type": "entrada",
-      "date": "22/04/2023",
-      "userID": "644330f39d52a22834f84b25"
-    } */
     promise.then(resposta => {
-      console.log(resposta.data);
       setListaGastos(resposta.data);
     })
     promise.catch(erro => {
@@ -41,17 +36,36 @@ export default function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  function logout (){
+
+    localStorage.removeItem("user")
+    setUserDados({});
+    alert ("O usuário fez logout!")
+    navigate("/")
+    
+/*     const promise = axios.get(`${process.env.REACT_APP_API_URL}/operations`, config);
+    promise.then(resposta => {
+      console.log(resposta.data)
+      navigate("/")
+      alert("O usuario saiu")
+    })
+    promise.catch(erro => {
+      console.log(erro.response.data);
+      alert(erro.response.data);
+    }) */
+  }
+
   return (
     <HomeContainer>
       <Header>
         <h1>Olá, {userDados.name}</h1>
-        <BiExit />
+        <BiExit onClick={() => logout()}/>
       </Header>
 
       <TransactionsContainer>
         <ul>
           {listaGastos.map((item) => 
-            <ListItemContainer>
+            <ListItemContainer key={item._id}>
               <div>
                 <span>{item.date.slice(0,5)}</span>
                 <strong>{item.description}</strong>
