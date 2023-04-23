@@ -3,25 +3,26 @@ import styled from "styled-components"
 import MyWalletLogo from "../components/MyWalletLogo"
 import axios from "axios";
 import { useState } from "react";
-
+import { ThreeDots } from 'react-loader-spinner';
 
 export default function SignUpPage() {
-  
+  const [desabilitado, SetDesabilitado] = useState(false);
   const BASE_URL = process.env.REACT_APP_API_URL;
   console.log(`${BASE_URL}cadastro`);
 
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', email: '', password: '', passwordConfirm: '' });
   console.log(form);
-  
+
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
-  
+
   function handleSubmit(e) {
     e.preventDefault();
     if (form.password === form.passwordConfirm) {
-      const body = {name: form.name, email: form.email, password: form.password};
+      SetDesabilitado(true);
+      const body = { name: form.name, email: form.email, password: form.password };
       const promise = axios.post(`${process.env.REACT_APP_API_URL}cadastro`, body);
 
       promise.then((resposta) => {
@@ -30,11 +31,12 @@ export default function SignUpPage() {
       });
       promise.catch((erro) => {
         alert(erro.response.data);
+        SetDesabilitado(false);
       });
-  
+
     } else {
-        alert("As senhas não coincidem")
-    }  
+      alert("As senhas não coincidem")
+    }
   }
 
   return (
@@ -47,6 +49,7 @@ export default function SignUpPage() {
           name="name"
           onChange={handleChange}
           value={form.name}
+          disabled={desabilitado}
           required
         />
         <input
@@ -55,6 +58,7 @@ export default function SignUpPage() {
           name="email"
           onChange={handleChange}
           value={form.email}
+          disabled={desabilitado}
           required
         />
         <input
@@ -63,6 +67,7 @@ export default function SignUpPage() {
           name="password"
           onChange={handleChange}
           value={form.password}
+          disabled={desabilitado}
           required
         />
         <input
@@ -71,9 +76,12 @@ export default function SignUpPage() {
           name="passwordConfirm"
           onChange={handleChange}
           value={form.passwordConfirm}
+          disabled={desabilitado}
           required
         />
-        <button type="submit"> Cadastrar</button>
+        <button type="submit" disabled={desabilitado}>
+          {desabilitado === true ? <ThreeDots color="#FFFFFF" height="15px" width="100%" /> : "Cadastrar"}
+        </button>
       </form>
 
       <Link to={"/"}>
