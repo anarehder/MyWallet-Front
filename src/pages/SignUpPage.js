@@ -8,7 +8,7 @@ import { ThreeDots } from 'react-loader-spinner';
 export default function SignUpPage() {
   const [desabilitado, SetDesabilitado] = useState(false);
   const BASE_URL = process.env.REACT_APP_API_URL;
-  console.log(`${BASE_URL}cadastro`);
+  console.log(`${BASE_URL}/cadastro`);
 
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', email: '', password: '', passwordConfirm: '' });
@@ -23,7 +23,7 @@ export default function SignUpPage() {
     if (form.password === form.passwordConfirm) {
       SetDesabilitado(true);
       const body = { name: form.name, email: form.email, password: form.password };
-      const promise = axios.post(`${process.env.REACT_APP_API_URL}cadastro`, body);
+      const promise = axios.post(`${process.env.REACT_APP_API_URL}/cadastro`, body);
 
       promise.then((resposta) => {
         console.log(resposta.data);

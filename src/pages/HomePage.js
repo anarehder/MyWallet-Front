@@ -1,37 +1,70 @@
 import styled from "styled-components"
 import { BiExit } from "react-icons/bi"
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai"
+import { useEffect, useContext, useState } from "react"
+import axios from "axios";
+import { User } from "../contexts/UserContext";
 
 export default function HomePage() {
+  const [userDados,] = useContext(User);
+  const [listaGastos, setListaGastos] = useState([]);
+  let soma = 0;
+  if (listaGastos.length > 0){
+    listaGastos.forEach((item) => (item.type === "entrada" ? soma += parseFloat(item.value) : soma-= parseFloat(item.value)))
+  }
+  // {_id, value, description, type, date,userID}
+  console.log(userDados)
+
+  useEffect(() => {
+    const config = {
+      headers: {
+        "Authorization": `Bearer ${userDados.token}`
+      }
+    }
+    const promise = axios.get(`${process.env.REACT_APP_API_URL}/operations`, config);
+    /* {
+      "_id": "644482ab57236e1e7f2c734a",
+      "value": "150.00",
+      "description": "Tia Cris",
+      "type": "entrada",
+      "date": "22/04/2023",
+      "userID": "644330f39d52a22834f84b25"
+    } */
+    promise.then(resposta => {
+      console.log(resposta.data);
+      setListaGastos(resposta.data);
+    })
+    promise.catch(erro => {
+      console.log(erro.response.data);
+      alert(erro.response.data);
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <HomeContainer>
       <Header>
-        <h1>Olá, Fulano</h1>
+        <h1>Olá, {userDados.name}</h1>
         <BiExit />
       </Header>
 
       <TransactionsContainer>
         <ul>
-          <ListItemContainer>
-            <div>
-              <span>30/11</span>
-              <strong>Almoço mãe</strong>
-            </div>
-            <Value color={"negativo"}>120,00</Value>
-          </ListItemContainer>
-
-          <ListItemContainer>
-            <div>
-              <span>15/11</span>
-              <strong>Salário</strong>
-            </div>
-            <Value color={"positivo"}>3000,00</Value>
-          </ListItemContainer>
+          {listaGastos.map((item) => 
+            <ListItemContainer>
+              <div>
+                <span>{item.date.slice(0,5)}</span>
+                <strong>{item.description}</strong>
+              </div>
+              <Value color={item.type === "entrada" ? "positivo":"negativo"}>{parseFloat(item.value).toFixed(2).replace(".",",") }</Value>
+            </ListItemContainer>
+          )}
         </ul>
-
         <article>
           <strong>Saldo</strong>
-          <Value color={"positivo"}>2880,00</Value>
+          <Value color={soma < 0 ? "negativo" : "positivo"}>
+            {soma.toFixed(2).replace(".",",")}
+          </Value>
         </article>
       </TransactionsContainer>
 
@@ -74,6 +107,9 @@ const TransactionsContainer = styled.article`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  ul{
+    overflow-y: scroll;
+  }
   article {
     display: flex;
     justify-content: space-between;   

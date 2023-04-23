@@ -1,25 +1,16 @@
 import styled from "styled-components"
 import { Link, useNavigate } from "react-router-dom"
 import MyWalletLogo from "../components/MyWalletLogo"
-import { useState, useEffect } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { ThreeDots } from 'react-loader-spinner';
+import { User } from "../contexts/UserContext";
 
 export default function SignInPage() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [desabilitado, SetDesabilitado] = useState(false);
   const navigate = useNavigate();
-  const lsUser = JSON.parse(localStorage.getItem("user"));
-  const [, setUserDados] = useState(lsUser !== null ? lsUser : {});
-  // colocar este no home page e transactions page ->  const [ , setUserDados] = useContext(UserContext);
-  
-  useEffect(() => {
-    if (lsUser === null) {
-      navigate("/");
-    } else {
-      navigate("/home");
-    }
-  }, [navigate,lsUser])
+  const [, setUserDados] = useContext(User);
 
   function handleChange(e) {
     const itemAtualizado = { ...form, [e.target.name]: e.target.value }
@@ -36,13 +27,14 @@ export default function SignInPage() {
     promise.then(resposta => {
       console.log(resposta.data);
       const { userID, name, email, token } = resposta.data;
-      setUserDados(resposta.data);
+      const novoUser = {userID, name, email, token};
+      setUserDados(novoUser);
       localStorage.setItem("user", JSON.stringify({userID, name, email, token }));
       navigate("/home")
     })
     promise.catch(erro => {
       console.log(erro.response.data);
-      alert(erro.response.data.message);
+      alert(erro.response.data);
       SetDesabilitado(false);
     })
   }
