@@ -2,7 +2,7 @@ import styled from "styled-components"
 import { BiExit } from "react-icons/bi"
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai"
 import { useEffect, useContext, useState } from "react"
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { User } from "../contexts/UserContext";
 
@@ -12,8 +12,8 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   let soma = 0;
-  if (listaGastos.length > 0){
-    listaGastos.forEach((item) => (item.type === "entrada" ? soma += parseFloat(item.value) : soma-= parseFloat(item.value)))
+  if (listaGastos.length > 0) {
+    listaGastos.forEach((item) => (item.type === "entrada" ? soma += parseFloat(item.value) : soma -= parseFloat(item.value)))
   }
   // {_id, value, description, type, date,userID}
 
@@ -36,62 +36,67 @@ export default function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function logout (){
+  function logout() {
 
     localStorage.removeItem("user")
     setUserDados({});
-    alert ("O usuário fez logout!")
+    alert("O usuário fez logout!")
     navigate("/")
-    
-/*     const promise = axios.get(`${process.env.REACT_APP_API_URL}/operations`, config);
-    promise.then(resposta => {
-      console.log(resposta.data)
-      navigate("/")
-      alert("O usuario saiu")
-    })
-    promise.catch(erro => {
-      console.log(erro.response.data);
-      alert(erro.response.data);
-    }) */
+
+    /*     const promise = axios.get(`${process.env.REACT_APP_API_URL}/operations`, config);
+        promise.then(resposta => {
+          console.log(resposta.data)
+          navigate("/")
+          alert("O usuario saiu")
+        })
+        promise.catch(erro => {
+          console.log(erro.response.data);
+          alert(erro.response.data);
+        }) */
   }
 
   return (
     <HomeContainer>
       <Header>
         <h1>Olá, {userDados.name}</h1>
-        <BiExit onClick={() => logout()}/>
+        <BiExit onClick={() => logout()} />
       </Header>
 
       <TransactionsContainer>
         <ul>
-          {listaGastos.map((item) => 
+          {listaGastos.map((item) =>
             <ListItemContainer key={item._id}>
               <div>
-                <span>{item.date.slice(0,5)}</span>
+                <span>{item.date.slice(0, 5)}</span>
                 <strong>{item.description}</strong>
               </div>
-              <Value color={item.type === "entrada" ? "positivo":"negativo"}>{parseFloat(item.value).toFixed(2).replace(".",",") }</Value>
+              <Value color={item.type === "entrada" ? "positivo" : "negativo"}>{parseFloat(item.value).toFixed(2).replace(".", ",")}</Value>
             </ListItemContainer>
           )}
         </ul>
         <article>
           <strong>Saldo</strong>
           <Value color={soma < 0 ? "negativo" : "positivo"}>
-            {soma.toFixed(2).replace(".",",")}
+            {soma.toFixed(2).replace(".", ",")}
           </Value>
         </article>
       </TransactionsContainer>
 
 
       <ButtonsContainer>
-        <button>
-          <AiOutlinePlusCircle />
-          <p>Nova <br /> entrada</p>
-        </button>
-        <button>
-          <AiOutlineMinusCircle />
-          <p>Nova <br />saída</p>
-        </button>
+        <Link to={"/nova-transacao/entrada"}>
+          <button >
+            <AiOutlinePlusCircle />
+            <p>Nova <br /> entrada</p>
+          </button>
+        </Link>
+        <Link to={"/nova-transacao/saida"}>
+          <button >
+            <AiOutlineMinusCircle />
+            <p>Nova <br />saída</p>
+          </button>
+        </Link>
+
       </ButtonsContainer>
 
     </HomeContainer>
@@ -134,13 +139,14 @@ const TransactionsContainer = styled.article`
   }
 `
 const ButtonsContainer = styled.section`
-  margin-top: 15px;
+  margin-top: 0;
   margin-bottom: 0;
   display: flex;
   gap: 15px;
-  
-  button {
+  a {
     width: 50%;
+    button {
+    width: 100%;
     height: 115px;
     font-size: 22px;
     text-align: left;
@@ -149,6 +155,7 @@ const ButtonsContainer = styled.section`
     justify-content: space-between;
     p {
       font-size: 18px;
+      }
     }
   }
 `
