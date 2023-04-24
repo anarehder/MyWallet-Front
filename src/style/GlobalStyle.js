@@ -17,11 +17,13 @@ const GlobalStyle = createGlobalStyle`
         cursor: pointer;
         width: 100%;
         padding: 12px;
+        margin: 5px;
     }
     h1 {
         font-weight: 700;
         font-size: 26px;
         color: white;
+        margin: 5px;
     }
     input {
         font-size: 20px;
@@ -30,7 +32,7 @@ const GlobalStyle = createGlobalStyle`
         outline: none;
         border: 1px solid #ccc;
         padding: 15px;
-        margin: 1px;
+        margin: 5px;
         :focus {
             border: 2px solid #ffb6b6;
             margin: 0px;
@@ -44,6 +46,7 @@ const GlobalStyle = createGlobalStyle`
         gap: 15px;
         width: 100%;
         border-radius: 5px;
+        margin: 5px;
     }
     a {
         font-weight: 700;

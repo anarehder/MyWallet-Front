@@ -24,7 +24,7 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-
+    //console.log(config)
     const promise = axios.get(`${process.env.REACT_APP_API_URL}/operations`, config);
     promise.then(resposta => {
       setListaGastos(resposta.data);
@@ -38,21 +38,21 @@ export default function HomePage() {
 
   function logout() {
 
-    localStorage.removeItem("user")
-    setUserDados({});
-    alert("O usuário fez logout!")
-    navigate("/")
+    const body = {"name": userDados.name}
+    console.log(body)
 
-    /*     const promise = axios.get(`${process.env.REACT_APP_API_URL}/operations`, config);
-        promise.then(resposta => {
-          console.log(resposta.data)
-          navigate("/")
-          alert("O usuario saiu")
-        })
-        promise.catch(erro => {
-          console.log(erro.response.data);
-          alert(erro.response.data);
-        }) */
+    const promise = axios.post(`${process.env.REACT_APP_API_URL}/logout`, body, config);
+    promise.then(resposta => {
+      console.log(resposta.data)
+      navigate("/")
+      localStorage.removeItem("user")
+      setUserDados({});
+      alert("O usuário fez logout!")
+    })
+    promise.catch(erro => {
+      console.log(erro.response.data);
+      alert(erro.response.data);
+    })
   }
 
   return (
@@ -104,34 +104,52 @@ export default function HomePage() {
 }
 
 const HomeContainer = styled.div`
+  width: 370px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   height: calc(100vh - 50px);
 `
 const Header = styled.header`
+  margin: 0 auto;
+  width: 350px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 2px 5px 2px;
+  margin-top: 7px;
   margin-bottom: 15px;
   font-size: 26px;
   color: white;
 `
 const TransactionsContainer = styled.article`
+  margin: 0 auto;
+  width: 340px;
   flex-grow: 1;
   background-color: #fff;
   color: #000;
   border-radius: 5px;
-  padding: 16px;
+  padding: 16px 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   ul{
     overflow-y: scroll;
   }
+  ul::-webkit-scrollbar {
+    width: 4px;               /* width of the entire scrollbar */
+    border-radius: 20px;
+    color: #a328d6;
+  }
+
+  ul::-webkit-scrollbar-track {
+    background: #a328d6;        /* color of the tracking area */
+    border-radius: 20px;  
+  }
   article {
     display: flex;
     justify-content: space-between;   
+    margin: 0 15px;
     strong {
       font-weight: 700;
       text-transform: uppercase;
@@ -139,13 +157,14 @@ const TransactionsContainer = styled.article`
   }
 `
 const ButtonsContainer = styled.section`
-  margin-top: 0;
-  margin-bottom: 0;
+  margin: 0 auto;
+  width: 350px;
   display: flex;
   gap: 15px;
   a {
     width: 50%;
     button {
+    margin-left: 0;
     width: 100%;
     height: 115px;
     font-size: 22px;
@@ -170,9 +189,15 @@ const ListItemContainer = styled.li`
   align-items: center;
   margin-bottom: 8px;
   color: #000000;
-  margin-right: 10px;
+  margin: 5px 10px;
+  min-height: 30px;
+  line-height: 20px;
   div span {
     color: #c6c6c6;
-    margin-right: 10px;
+    margin-right: 15px;
+    word-break: break-word;
+  }
+  div {
+    margin-right: 4px;
   }
 `

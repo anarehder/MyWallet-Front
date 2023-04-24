@@ -41,7 +41,7 @@ export default function TransactionsPage() {
 
   return (
     <TransactionsContainer>
-      <h1>Nova {tipo}</h1>
+      <h1>Nova {tipo === "saida" ? "saída" : tipo}</h1>
       <form onSubmit={logar}>
         <input
           placeholder="Valor"
@@ -62,7 +62,7 @@ export default function TransactionsPage() {
           //required
         />
         <button type="submit" disabled={desabilitado}>
-          {desabilitado === true ? <ThreeDots color="#FFFFFF" height="15px" width="100%" /> : `Salvar ${tipo}`}
+          {desabilitado === true ? <ThreeDots color="#FFFFFF" height="15px" width="100%" /> : `Salvar ${tipo === "saida" ? "saída" : tipo}`}
         </button>
       </form>
     </TransactionsContainer>
@@ -70,6 +70,8 @@ export default function TransactionsPage() {
 }
 
 const TransactionsContainer = styled.main`
+  max-width: 370px;
+  margin: 0 auto;
   height: calc(100vh - 50px);
   display: flex;
   flex-direction: column;
