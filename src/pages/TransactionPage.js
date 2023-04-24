@@ -25,7 +25,9 @@ export default function TransactionsPage() {
 
   function logar(e) {
     e.preventDefault()
-    const body = form;
+    const formFormatado = {value: form.value.replace(",","."), description: form.description}
+
+    const body = formFormatado;
     SetDesabilitado(true);
     const promise = axios.post(`${process.env.REACT_APP_API_URL}/nova-transacao/${tipo}`, body, config);
     promise.then(resposta => {
