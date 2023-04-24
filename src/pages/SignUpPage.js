@@ -92,7 +92,7 @@ export default function SignUpPage() {
 }
 
 const SingUpContainer = styled.section`
-  max-width: 370px;
+  max-width: 325px;
   margin: 0 auto;
   height: 100vh;
   display: flex;

@@ -72,7 +72,7 @@ export default function TransactionsPage() {
 }
 
 const TransactionsContainer = styled.main`
-  max-width: 370px;
+  max-width: 325px;
   margin: 0 auto;
   height: calc(100vh - 50px);
   display: flex;

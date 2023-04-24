@@ -104,7 +104,7 @@ export default function HomePage() {
 }
 
 const HomeContainer = styled.div`
-  width: 370px;
+  width: 325px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -112,7 +112,7 @@ const HomeContainer = styled.div`
 `
 const Header = styled.header`
   margin: 0 auto;
-  width: 350px;
+  width: 295px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -124,7 +124,7 @@ const Header = styled.header`
 `
 const TransactionsContainer = styled.article`
   margin: 0 auto;
-  width: 340px;
+  width: 310px;
   flex-grow: 1;
   background-color: #fff;
   color: #000;
@@ -157,11 +157,12 @@ const TransactionsContainer = styled.article`
   }
 `
 const ButtonsContainer = styled.section`
-  margin: 0 auto;
-  width: 350px;
+  margin: 5px auto;
+  width: 320px;
   display: flex;
   gap: 15px;
   a {
+    padding: 0;
     width: 50%;
     button {
     margin-left: 0;

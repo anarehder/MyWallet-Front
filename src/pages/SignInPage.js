@@ -74,7 +74,7 @@ export default function SignInPage() {
 }
 
 const SingInContainer = styled.section`
-  max-width: 370px;
+  width: 325px;
   margin: 0 auto;
   height: 100vh;
   display: flex;
