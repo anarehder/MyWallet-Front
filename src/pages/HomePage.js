@@ -63,28 +63,30 @@ export default function HomePage() {
         <h1>Olá, {userDados.name}</h1>
         <BiExit onClick={() => logout()} />
       </Header>
-      {(carregando === false && listaGastos.length === 0) ? <SemGastos> Não há registros de entrada ou saída </SemGastos> :
-        <TransactionsContainer>
-          <ul>
-            {listaGastos.map((item) =>
-              <ListItemContainer key={item._id}>
-                <div>
-                  <span>{item.date.slice(0, 5)}</span>
-                  <strong>{item.description}</strong>
-                </div>
-                <Value color={item.type === "entrada" ? "positivo" : "negativo"}>{parseFloat(item.value).toFixed(2).replace(".", ",")}</Value>
-              </ListItemContainer>
-            )}
-          </ul>
-          <article>
-            <strong>Saldo</strong>
-            <Value color={soma < 0 ? "negativo" : "positivo"}>
-              {soma.toFixed(2).replace(".", ",")}
-            </Value>
-          </article>
-        </TransactionsContainer>
-      }
-
+      <TransactionsContainer>
+        {carregando === true ? <SemGastos><ListItemContainer></ListItemContainer></SemGastos> :
+          (carregando === false && listaGastos.length === 0) ? <SemGastos> Não há registros de entrada ou saída </SemGastos> :
+            <>
+              <ul>
+                {listaGastos.map((item) =>
+                  <ListItemContainer key={item._id}>
+                    <div>
+                      <span>{item.date.slice(0, 5)}</span>
+                      <strong>{item.description}</strong>
+                    </div>
+                    <Value color={item.type === "entrada" ? "positivo" : "negativo"}>{parseFloat(item.value).toFixed(2).replace(".", ",")}</Value>
+                  </ListItemContainer>
+                )}
+              </ul>
+              <article>
+                <strong>Saldo</strong>
+                <Value color={soma < 0 ? "negativo" : "positivo"}>
+                  {soma.toFixed(2).replace(".", ",")}
+                </Value>
+              </article>
+            </>
+        }
+      </TransactionsContainer>
       <ButtonsContainer>
         <Link to={"/nova-transacao/entrada"}>
           <button >
@@ -186,6 +188,7 @@ const ButtonsContainer = styled.section`
 const Value = styled.div`
   font-size: 16px;
   text-align: right;
+  margin-left: 8px;
   color: ${(props) => (props.color === "positivo" ? "green" : "red")};
 `
 const ListItemContainer = styled.li`
@@ -209,17 +212,16 @@ const ListItemContainer = styled.li`
 
 const SemGastos = styled.div`
   margin: 0 auto;
-  width: 280px;
-  height: calc(100vh - 240px);
+  width: 270px;
+  padding: 15px 20px;
+  margin-bottom: 10px;
+  height: calc(100vh - 160px);
   background-color: #fff;
-  color: #000;
   border-radius: 5px;
-  flex-grow: 1;
   color: #868686;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   font-size: 22px;
-  padding: 20px;
 `
