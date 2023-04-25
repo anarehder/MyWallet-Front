@@ -10,12 +10,12 @@ export default function HomePage() {
   const [userDados, setUserDados] = useContext(User);
   const [listaGastos, setListaGastos] = useState([]);
   const navigate = useNavigate();
+  const [carregando, setCarregando] = useState(false);
 
   let soma = 0;
   if (listaGastos.length > 0) {
     listaGastos.forEach((item) => (item.type === "entrada" ? soma += parseFloat(item.value) : soma -= parseFloat(item.value)))
   }
-  // {_id, value, description, type, date,userID}
 
   const config = {
     headers: {
@@ -24,36 +24,38 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    //console.log(config)
+    setCarregando(true);
     const promise = axios.get(`${process.env.REACT_APP_API_URL}/operations`, config);
     promise.then(resposta => {
       setListaGastos(resposta.data);
+      setCarregando(false);
     })
     promise.catch(erro => {
-      console.log(erro.response.data);
       alert(erro.response.data);
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function logout() {
-
-    const body = {"name": userDados.name}
-    console.log(body)
+    const body = { "name": userDados.name }
 
     const promise = axios.post(`${process.env.REACT_APP_API_URL}/logout`, body, config);
     promise.then(resposta => {
-      console.log(resposta.data)
       navigate("/")
       localStorage.removeItem("user")
       setUserDados({});
-      alert("O usuário fez logout!")
+      alert(resposta.data)
     })
     promise.catch(erro => {
-      console.log(erro.response.data);
       alert(erro.response.data);
     })
   }
+
+  function atualizaPagina() {
+    window.location.reload(true)
+  }
+
+  setInterval(atualizaPagina, 120000);
 
   return (
     <HomeContainer>
@@ -61,27 +63,27 @@ export default function HomePage() {
         <h1>Olá, {userDados.name}</h1>
         <BiExit onClick={() => logout()} />
       </Header>
-
-      <TransactionsContainer>
-        <ul>
-          {listaGastos.map((item) =>
-            <ListItemContainer key={item._id}>
-              <div>
-                <span>{item.date.slice(0, 5)}</span>
-                <strong>{item.description}</strong>
-              </div>
-              <Value color={item.type === "entrada" ? "positivo" : "negativo"}>{parseFloat(item.value).toFixed(2).replace(".", ",")}</Value>
-            </ListItemContainer>
-          )}
-        </ul>
-        <article>
-          <strong>Saldo</strong>
-          <Value color={soma < 0 ? "negativo" : "positivo"}>
-            {soma.toFixed(2).replace(".", ",")}
-          </Value>
-        </article>
-      </TransactionsContainer>
-
+      {(carregando === false && listaGastos.length === 0) ? <SemGastos> Não há registros de entrada ou saída </SemGastos> :
+        <TransactionsContainer>
+          <ul>
+            {listaGastos.map((item) =>
+              <ListItemContainer key={item._id}>
+                <div>
+                  <span>{item.date.slice(0, 5)}</span>
+                  <strong>{item.description}</strong>
+                </div>
+                <Value color={item.type === "entrada" ? "positivo" : "negativo"}>{parseFloat(item.value).toFixed(2).replace(".", ",")}</Value>
+              </ListItemContainer>
+            )}
+          </ul>
+          <article>
+            <strong>Saldo</strong>
+            <Value color={soma < 0 ? "negativo" : "positivo"}>
+              {soma.toFixed(2).replace(".", ",")}
+            </Value>
+          </article>
+        </TransactionsContainer>
+      }
 
       <ButtonsContainer>
         <Link to={"/nova-transacao/entrada"}>
@@ -96,9 +98,7 @@ export default function HomePage() {
             <p>Nova <br />saída</p>
           </button>
         </Link>
-
       </ButtonsContainer>
-
     </HomeContainer>
   )
 }
@@ -112,24 +112,25 @@ const HomeContainer = styled.div`
 `
 const Header = styled.header`
   margin: 0 auto;
-  width: 295px;
+  width: 320px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2px 5px 2px;
-  margin-top: 7px;
+  margin-top: 5px;
   margin-bottom: 15px;
+  height: 40px;
   font-size: 26px;
   color: white;
 `
 const TransactionsContainer = styled.article`
   margin: 0 auto;
   width: 310px;
-  flex-grow: 1;
+  height: calc(100vh - 240px);
   background-color: #fff;
   color: #000;
   border-radius: 5px;
-  padding: 16px 5px;
+  margin-bottom: 10px;
+  padding: 5px 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -149,7 +150,8 @@ const TransactionsContainer = styled.article`
   article {
     display: flex;
     justify-content: space-between;   
-    margin: 0 15px;
+    margin: 5px 15px;
+    padding-top: 5px;
     strong {
       font-weight: 700;
       text-transform: uppercase;
@@ -159,6 +161,7 @@ const TransactionsContainer = styled.article`
 const ButtonsContainer = styled.section`
   margin: 5px auto;
   width: 320px;
+  height: 140px;
   display: flex;
   gap: 15px;
   a {
@@ -173,6 +176,7 @@ const ButtonsContainer = styled.section`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: 110px;
     p {
       font-size: 18px;
       }
@@ -192,7 +196,7 @@ const ListItemContainer = styled.li`
   color: #000000;
   margin: 5px 10px;
   min-height: 30px;
-  line-height: 20px;
+  line-height: 22px;
   div span {
     color: #c6c6c6;
     margin-right: 15px;
@@ -201,4 +205,21 @@ const ListItemContainer = styled.li`
   div {
     margin-right: 4px;
   }
+`
+
+const SemGastos = styled.div`
+  margin: 0 auto;
+  width: 280px;
+  height: calc(100vh - 240px);
+  background-color: #fff;
+  color: #000;
+  border-radius: 5px;
+  flex-grow: 1;
+  color: #868686;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 22px;
+  padding: 20px;
 `

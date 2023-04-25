@@ -30,12 +30,10 @@ export default function TransactionsPage() {
     const body = formFormatado;
     SetDesabilitado(true);
     const promise = axios.post(`${process.env.REACT_APP_API_URL}/nova-transacao/${tipo}`, body, config);
-    promise.then(resposta => {
-      console.log(resposta.data);
+    promise.then(() => {
       navigate("/home")
     })
     promise.catch(erro => {
-      console.log(erro.response.data);
       alert(erro.response.data);
       SetDesabilitado(false);
     })
@@ -52,7 +50,6 @@ export default function TransactionsPage() {
           value={form.value}
           onChange={handleChange}
           disabled={desabilitado}
-          //required
         />
         <input
           placeholder="Descrição"
@@ -61,7 +58,6 @@ export default function TransactionsPage() {
           value={form.description}
           onChange={handleChange}
           disabled={desabilitado}
-          //required
         />
         <button type="submit" disabled={desabilitado}>
           {desabilitado === true ? <ThreeDots color="#FFFFFF" height="15px" width="100%" /> : `Salvar ${tipo === "saida" ? "saída" : tipo}`}

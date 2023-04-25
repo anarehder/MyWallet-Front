@@ -21,11 +21,9 @@ export default function SignInPage() {
     e.preventDefault()
     const body = form;
     SetDesabilitado(true);
-    console.log(`${process.env.REACT_APP_API_URL}/login`)
     const promise = axios.post(`${process.env.REACT_APP_API_URL}/login`, body);
 
     promise.then(resposta => {
-      console.log(resposta.data);
       const { userID, name, email, token } = resposta.data;
       const novoUser = {userID, name, email, token};
       setUserDados(novoUser);
@@ -33,7 +31,6 @@ export default function SignInPage() {
       navigate("/home")
     })
     promise.catch(erro => {
-      console.log(erro.response.data);
       alert(erro.response.data);
       SetDesabilitado(false);
     })
@@ -65,7 +62,6 @@ export default function SignInPage() {
           {desabilitado === true ? <ThreeDots color="#FFFFFF" height="15px" width="100%" /> : "Entrar"}
         </button>
       </form>
-
       <Link to={"/cadastro"}>
         Primeira vez? Cadastre-se!
       </Link>
@@ -81,4 +77,7 @@ const SingInContainer = styled.section`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  a {
+    margin-top: 10px;
+  }
 `

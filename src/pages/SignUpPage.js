@@ -7,12 +7,9 @@ import { ThreeDots } from 'react-loader-spinner';
 
 export default function SignUpPage() {
   const [desabilitado, SetDesabilitado] = useState(false);
-  const BASE_URL = process.env.REACT_APP_API_URL;
-  console.log(`${BASE_URL}/cadastro`);
 
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', email: '', password: '', passwordConfirm: '' });
-  console.log(form);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,8 +22,7 @@ export default function SignUpPage() {
       const body = { name: form.name, email: form.email, password: form.password };
       const promise = axios.post(`${process.env.REACT_APP_API_URL}/cadastro`, body);
 
-      promise.then((resposta) => {
-        console.log(resposta.data);
+      promise.then(() => {
         navigate("/");
       });
       promise.catch((erro) => {
@@ -83,7 +79,6 @@ export default function SignUpPage() {
           {desabilitado === true ? <ThreeDots color="#FFFFFF" height="15px" width="100%" /> : "Cadastrar"}
         </button>
       </form>
-
       <Link to={"/"}>
         Já tem uma conta? Entre agora!
       </Link>
